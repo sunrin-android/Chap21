@@ -47,7 +47,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         if(v==contactBtn){
            // 주소록 앱에 인텐트 보내기
-
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_PICK);
+            intent.setData(ContactsContract.Contacts.CONTENT_URI);
         }
     }
 
