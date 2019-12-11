@@ -56,8 +56,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        String s = data.getDataString();
-        nameView.setText(s);
+        if(requestCode == 100 && resultCode == RESULT_OK){
+            String id = Uri.parse(data.getDataString()).getLastPathSegment();
+            Cursor cursor = getContentResolver().query(ContactsContract.Data.CONTENT_URI, new String[]{
+                    ContactsContract.Data.DISPLAY_NAME,
+                    ContactsContract.CommonDataKinds.Phone.NUMBER,
+                    ContactsContract.CommonDataKinds.Email.ADDRESS
+            }, "contact_id=?", new String[]{id}, null);
+
+            String name = "";
+            String number = "";
+            String email = "";
+            if(cursor.moveToNext()){
+                name = cursor.getString(0);
+                number = cursor.getString(1);
+            }
+
+            cursor = getContentResolver().query(ContactsContract.Data.CONTENT_URI, new String[]{
+                    ContactsContract.CommonDataKinds.Email.ADDRESS
+            }, "contact_id=?", new String[]{id}, null);
+            if(cursor.moveToNext()){
+                email = cursor.getString(0);
+            }
+            nameView.setText(name);
+            phoneView.setText(number);
+            emailView.setText(email);
+        }
     }
 }
 
